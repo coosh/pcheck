@@ -54,24 +54,17 @@ def get_ids():
 
 def get_alts():
   for i in items:
-    for x in Asteroids:
-      print("Testing _", i.name, "_ against _", x, "_", "x")
-      if i.name.find(x) == -1:
-        print("Match Found:", i.name, "vs", x)
-        if 'Compressed' in i.name:
-          print("Found compressed item! ", i.name)
-          i.alt_name = i.name.replace('Compressed ', '')
-          i.alt_amount = i.amount * 100
-          print("New Alt Item: ", i.alt_name)
-        else:
-          print("Not compressed item!", i.name)
-          i.alt_name = "Compressed " + i.name
-          i.alt_amount = i.amount / 100
-          print("New Alt Item: ", i.alt_name)
+    if 'Ice' not in i.type and 'Moon' not in i.type and 'Asteroid' in i.category:
+      if 'Compressed' in i.name:
+        i.alt_name = i.name.replace('Compressed ', '')
+        i.alt_amount = i.amount * 100
       else:
-        i.alt_typeID = i.typeID
-        i.alt_name = i.name
-        i.alt_amount = i.amount
+        i.alt_name = "Compressed " + i.name
+        i.alt_amount = i.amount / 100
+    else:
+      i.alt_typeID = i.typeID
+      i.alt_name = i.name
+      i.alt_amount = i.amount
 
 def get_price():
   ids, names, qty = [], [], []
