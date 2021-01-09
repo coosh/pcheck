@@ -1,0 +1,36 @@
+def get_ids():
+  url = URL_TypeID
+  for column in items:
+    print("Adding: ", column[0], file=sys.stdout)
+    url = url + column[0] + "|"
+  url = url[:-1]
+  response = requests.get(url)
+  json_data = json.loads(response.text)
+  print("Response: ", response.text)
+  for (k, v) in json_data:
+    print("Key: " + k)
+    print("Value: " + str(v))
+
+
+
+  typeID     = "0"
+  alt_name   = ""
+  alt_typeID = "0"
+
+  sell_avg        = ""
+  sell_max        = ""
+  sell_median     = ""
+  sell_min        = ""
+  sell_percentile = ""
+  sell_stddev     = ""
+  sell_volume     = ""
+  sell_ordercount = ""
+
+  buy_avg        = ""
+  buy_max        = ""
+  buy_median     = ""
+  buy_min        = ""
+  buy_percentile = ""
+  buy_stddev     = ""
+  buy_volume     = ""
+  buy_ordercount = ""
