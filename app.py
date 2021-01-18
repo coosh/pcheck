@@ -1,6 +1,6 @@
 from flask import Flask, session, redirect, url_for, request, render_template, jsonify
 from markupsafe import escape
-import sys, requests, json, re
+import sys, requests, json, re, uuid
 
 app = Flask(__name__)
 
@@ -29,7 +29,20 @@ class item:
     self.type     = name_type
     self.category = category
 
-def process_items():
+def save_request():
+  print("saving")
+  f = open(uuid.uuid4(), "a")
+  f.write(request.form.get('data'))
+  f.close()
+
+def process_items_contract():
+  data = request.form.get('data')
+  for line in data.splitlines():
+    fields = line.split('\t')
+    qty = fields[1].replace(',', '')
+    items.append( item(fields[0].strip(), int(qty), fields[2], fields[3]) )
+
+def process_items_buyback():
   data = request.form.get('data')
   for line in data.splitlines():
     fields = line.split('\t')
@@ -162,9 +175,27 @@ def index():
     global orders
     items = []
     orders = []
-    process_items()
+    process_items_contract()
     get_alts()
     get_ids()
     get_price()
     get_alt_price()
     return render_template("result.html", items = items, orders = orders)
+
+@app.route('/buyback', methods = ['POST', 'GET'])
+def buyback():
+  if request.method == 'GET':
+    return render_template('form.html')
+
+  if request.method == 'POST':
+    global items
+    global orders
+    items = []
+    orders = []
+    save_request()
+    process_items_buyback()
+    get_alts()
+    get_ids()
+    get_price()
+    get_alt_price()
+    return render_template("buyback.html", items = items, orders = orders)
