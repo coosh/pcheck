@@ -6,5 +6,6 @@ To use it:
 git clone https://github.com/coosh/pcheck
 source pcheck/bin/activate
 cd pcheck
+pip3 install -r requirements.txt
 Make dev
 ```
