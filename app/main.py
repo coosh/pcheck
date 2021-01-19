@@ -23,11 +23,9 @@ class item:
   alt_name   = ""
   typeID     = "0"
   alt_typeID = "0"
-  def __init__(self, name, amount, name_type, category):
+  def __init__(self, name, amount):
     self.name     = name
     self.amount   = amount
-    self.type     = name_type
-    self.category = category
 
 def save_request():
   print("saving")
@@ -35,25 +33,21 @@ def save_request():
   f.write(request.form.get('data'))
   f.close()
 
-def process_items_contract():
+def process_items():
   data = request.form.get('data')
   for line in data.splitlines():
     fields = line.split('\t')
     qty = fields[1].replace(',', '')
-    items.append( item(fields[0].strip(), int(qty), fields[2], fields[3]) )
-
-def process_items_buyback():
-  data = request.form.get('data')
-  for line in data.splitlines():
-    fields = line.split('\t')
-    qty = fields[1].replace(',', '')
-    items.append( item(fields[0].strip(), int(qty), fields[2], fields[3]) )
+    if not qty:
+      qty = 1
+    items.append( item(fields[0].strip(), int(qty)) )
 
 def get_ids():
   url = URL_TypeID
   for i in items:
     url = url + i.name + "|"
-    if i.category == "Asteroid":
+    res = any(ele in i.name for ele in Asteroids)
+    if res == True:
       url = url + i.alt_name + "|"
   url = url[:-1]
   response = requests.get(url)
@@ -67,7 +61,8 @@ def get_ids():
 
 def get_alts():
   for i in items:
-    if 'Ice' not in i.type and 'Moon' not in i.type and 'Asteroid' in i.category:
+    res = any(ele in i.name for ele in Asteroids)
+    if res == True:
       if 'Compressed' in i.name:
         i.alt_name = i.name.replace('Compressed ', '')
         i.alt_amount = i.amount * 100
@@ -164,7 +159,7 @@ def get_alt_price():
         i.alt_sell_ordercount = d['prices']['sell']['order_count']
 
 @app.route('/check', methods = ['POST', 'GET'])
-def index():
+def check():
   # GET Request, supply input!
   if request.method == 'GET':
     return render_template('form.html')
@@ -175,7 +170,7 @@ def index():
     global orders
     items = []
     orders = []
-    process_items_contract()
+    process_items()
     get_alts()
     get_ids()
     get_price()
@@ -185,17 +180,17 @@ def index():
 @app.route('/buyback', methods = ['POST', 'GET'])
 def buyback():
   if request.method == 'GET':
-    return render_template('form.html')
+    return render_template('buyback_form.html')
 
   if request.method == 'POST':
     global items
     global orders
     items = []
     orders = []
-    save_request()
-    process_items_buyback()
+    process_items()
     get_alts()
     get_ids()
     get_price()
     get_alt_price()
-    return render_template("buyback.html", items = items, orders = orders)
+    buybackprice=min(int(orders[0].buy_corp), int(orders[1].buy_corp))
+    return render_template("buyback.html", buybackprice = buybackprice)
