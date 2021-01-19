@@ -1,0 +1,10 @@
+This is just a small app to check eve online contracts are correct values and not cheating the system. 
+
+
+To use it:
+```
+git clone https://github.com/coosh/pcheck
+source pcheck/bin/activate
+cd pcheck
+Make dev
+```
