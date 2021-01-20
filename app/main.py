@@ -1,6 +1,7 @@
-from flask import Flask, session, redirect, url_for, request, render_template, jsonify
-from markupsafe import escape
+from flask import Flask, request, render_template
 import sys, requests, json, re, uuid
+from app.item import item
+from app.order import order
 
 app = Flask(__name__)
 
@@ -8,24 +9,6 @@ URL_TypeID="http://www.fuzzwork.co.uk/api/typeid2.php?typename="
 URL_EveApraisal="https://evepraisal.com/appraisal/structured.json"
 Asteroids = ['Veldspar', 'Scordite', 'Pyroxeres', 'Plagioclase', 'Kernite', 'Jaspet', 'Hemorphite', 'Omber', 'Arkonor', 'Bistot', 'Mercoxit', 'Spodumain']
 custom_header = {"User-Agent": "Character, Cuish, Small Flask app to verify buybacks"}
-
-class order:
-  def __init__(self, name, buy, sell, volume, buy_corp, sell_corp):
-    self.name      = name
-    self.buy       = buy
-    self.sell      = sell
-    self.volume    = volume
-    self.buy_corp  = buy_corp
-    self.sell_corp = sell_corp
-  
-
-class item:
-  alt_name   = ""
-  typeID     = "0"
-  alt_typeID = "0"
-  def __init__(self, name, amount):
-    self.name     = name
-    self.amount   = amount
 
 def save_request():
   print("saving")
@@ -76,17 +59,14 @@ def get_alts():
 
 def get_price():
   ids, names, qty = [], [], []
-  data = "{\"market_name\": \"jita\", \"items\":"
   for i in items:
     ids.append(i.typeID)
     names.append(i.name)
     qty.append(i.amount)
   request_dict = [{"name": x, "type_id": int(y), "quantity": int(z)} for x, y, z in zip(names, ids, qty)]
-  data = data + str(request_dict)
-  data = data + "}"
+  data = "{\"market_name\": \"jita\", \"items\":" + str(request_dict) + "}"
   data = data.replace("'", '"')
   request_json = json.loads(data)
-
   response = requests.post(URL_EveApraisal, json = request_json, headers = custom_header)
   json_data = json.loads(response.text)
   buy    = json_data['appraisal']['totals']['buy']
@@ -118,14 +98,12 @@ def get_price():
 
 def get_alt_price():
   ids, names, qty = [], [], []
-  data = "{\"market_name\": \"jita\", \"items\":"
   for i in items:
     ids.append(i.alt_typeID)
     names.append(i.alt_name)
     qty.append(i.alt_amount)
   request_dict = [{"name": x, "type_id": int(y), "quantity": int(z)} for x, y, z in zip(names, ids, qty)]
-  data = data + str(request_dict)
-  data = data + "}"
+  data = "{\"market_name\": \"jita\", \"items\":" + str(request_dict) + "}"
   data = data.replace("'", '"')
   request_json = json.loads(data)
 
