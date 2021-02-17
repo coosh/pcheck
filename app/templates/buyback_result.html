@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Buyback order</h1>
+<br/>
+<br/>
+Your buyback price is: <h1 style="color:blue;">{{ "${:,.0f}  ".format(buybackprice) }}</h1>
+{% endblock %}

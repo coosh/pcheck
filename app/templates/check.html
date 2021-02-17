@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>This form will give you the exact buyback price you should submit when using buyback</h1>
+<h1>This form will give you a breakdown of the items at %100 and %85 corp price</h1>
 <br/>
 <br/>
+
 Copy and paste your items from eve here and hit submit:
-<form action="/buyback" method="POST">
+<form action="/check" method="POST">
   <textarea id="data" name="data" rows="25" cols="50"></textarea>
   <input type="submit" value="Submit">
 </form>

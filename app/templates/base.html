@@ -1,3 +1,44 @@
-<html><body>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+    display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+</style>
+</head>
+<body>
+
+<ul>
+  <li><img src="{{url_for('static', filename='logo.png')}}" width="42" height="42"></li>
+  <li><a href="buyback">Buyback Goods</a></li>
+  <li><a href="check">Check Contract Order</a></li>
+</ul>
+
   {% block content %}{% endblock %}
 </body></html>
