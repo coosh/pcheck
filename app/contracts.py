@@ -140,7 +140,7 @@ def get_alt_price():
 def check():
   # GET Request, supply input!
   if request.method == 'GET':
-    return render_template('form.html')
+    return render_template('check.html')
 
   # Process request
   if request.method == 'POST':
@@ -153,12 +153,12 @@ def check():
     get_ids()
     get_price()
     get_alt_price()
-    return render_template("result.html", items = items, orders = orders)
+    return render_template("check_result.html", items = items, orders = orders)
 
 @contracts.route('/buyback', methods = ['POST', 'GET'])
 def buyback():
   if request.method == 'GET':
-    return render_template('buyback_form.html')
+    return render_template('buyback.html')
 
   if request.method == 'POST':
     global items
@@ -171,4 +171,4 @@ def buyback():
     get_price()
     get_alt_price()
     buybackprice=min(int(orders[0].buy_corp), int(orders[1].buy_corp))
-    return render_template("buyback.html", buybackprice = buybackprice)
+    return render_template("buyback_result.html", buybackprice = buybackprice)
