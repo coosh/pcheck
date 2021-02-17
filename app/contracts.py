@@ -136,6 +136,10 @@ def get_alt_price():
         i.alt_sell_volume     = d['prices']['sell']['volume']
         i.alt_sell_ordercount = d['prices']['sell']['order_count']
 
+@contracts.route('/', methods = ['GET'])
+def index():
+  return render_template('index.html')
+
 @contracts.route('/check', methods = ['POST', 'GET'])
 def check():
   # GET Request, supply input!
